@@ -227,12 +227,12 @@ class Siamese(nn.Module):
         self.tconv = nn.ConvTranspose2d(21, 21, 3, 2) #hardcode the channel size ..
         self.ups = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False)
         self.mp = nn.MaxPool2d(2, 2)
-        self.bn_adjust = nn.BatchNorm2d(1, affine=False)
+        self.bn_adjust = nn.BatchNorm2d(1)
         self.sigmoid = nn.Sigmoid()
         self.criterion = nn.BCELoss()
 
     def get_decoder_params(self):
-        return itertools.chain(self.tconv.parameters(), self.ups.parameters(), self.mp.parameters(), self.sigmoid.parameters())
+        return itertools.chain(self.tconv.parameters(), self.ups.parameters(), self.bn_adjust.parameters(), self.mp.parameters(), self.sigmoid.parameters())
 
     def forward(self, input):
         output = self.deeplab(input) # 1/8 resolution
@@ -274,7 +274,7 @@ class Siamese(nn.Module):
 
         similarity = self.sigmoid(similarity)
 
-        return self.criterion(similarity, gt.to('cuda'))
+        return self.criterion(similarity, gt)
 
     #only inference single (not batch) frames
     def inference_single(self, input1, anno1, input2, K = 100):
