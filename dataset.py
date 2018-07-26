@@ -4,7 +4,6 @@ import os
 import csv
 import numpy as np
 from PIL import Image
-import time
 
 DAVIS_PATH = '/home/cly/datacenter/DAVIS'
 
