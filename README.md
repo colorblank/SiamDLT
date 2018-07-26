@@ -15,35 +15,46 @@ a pytorch implementation of the paper [Similarity Learning for Dense Label Trans
 
 requirement:
 
-​	pytorch 0.4.0
-
-​	python 3.6
-
-​	GPU support
-
-​	[DAVIS2017 dataset](https://davischallenge.org/davis2017/code.html) 
+* pytorch 0.4.0
+* python 3.6
+* GPU support
+* [DAVIS2017 dataset](https://davischallenge.org/davis2017/code.html) 
 
 
 
 #### Training(from deeplab pretrained model) 
 
- 	1. download [deeplab pretrained model](https://drive.google.com/uc?id=1Vi9mFuXk03GBbSV_3smjFA8S5-t3xj1h&export=download) which is support by [pytorch-deeplab-resnet](https://github.com/isht7/pytorch-deeplab-resnet) , put it in pretrained/deeplab.pth
+ 1. download [deeplab pretrained model](https://drive.google.com/uc?id=1Vi9mFuXk03GBbSV_3smjFA8S5-t3xj1h&export=download) which is support by [pytorch-deeplab-resnet](https://github.com/isht7/pytorch-deeplab-resnet) , put it in pretrained/deeplab.pth
+
 	2. modify [DAVIS_PATH](https://github.com/mayorx/SiamDLT/blob/6c6e82a213899e566487bf56909ec34b262cf1ae/dataset.py#L8)
-	3. run ``` python main.py``` 
+
+	3. run 
+
+    * python main.py
+
+    
 
 #### Training(from checkpoint)
 
 0. pretrained model will be available soon....
 
 1. modify  [DAVIS_PATH](https://github.com/mayorx/SiamDLT/blob/6c6e82a213899e566487bf56909ec34b262cf1ae/dataset.py#L8)
+
 2. modify [ckpt_file](https://github.com/mayorx/SiamDLT/blob/master/main.py#L21)
-3. run ``` python main.py```
+
+3. run
+
+   * python main.py
+
+   
 
 #### Inference
 
 1. modify [ckpt_file](https://github.com/mayorx/SiamDLT/blob/master/eval.py#L12)
 
-2. run ```python eval.py```
+2. run
+
+   * python eval.py
 
 3. results will saved in result/ , you can modify [here](https://github.com/mayorx/SiamDLT/blob/master/utils.py#L54) to see more results
 
