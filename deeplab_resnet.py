@@ -113,8 +113,6 @@ class Classifier_Module(nn.Module):
             out += self.conv2d_list[i+1](x)
         return out
 
-
-
 class ResNet(nn.Module):
     def __init__(self, block, layers, NoLabels):
         self.inplanes = 64
@@ -209,7 +207,7 @@ class Siamese(nn.Module):
         output1 = self.forward(input1)
         output2 = self.forward(input2)
 
-        #stocastic poolin spend about 90% of the time !!!!
+        #stocastic pooling spend about 90% of the time !!!!
         filtered_out_1, expand_labels_1 = utils.stocastic_pooling(output1, anno1, K, N) #1 * d * P
         filtered_out_2, expand_labels_2 = utils.stocastic_pooling(output2, anno2, K, N) #1 * d * Q
 
