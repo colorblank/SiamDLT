@@ -210,8 +210,8 @@ class Siamese(nn.Module):
         output2 = self.forward(input2)
 
         #stocastic poolin spend about 90% of the time !!!!
-        filtered_out_1, i_1, j_1, expand_labels_1 = utils.stocastic_pooling(output1, anno1, K, N) #1 * d * P
-        filtered_out_2, i_2, j_2, expand_labels_2 = utils.stocastic_pooling(output2, anno2, K, N) #1 * d * Q
+        filtered_out_1, expand_labels_1 = utils.stocastic_pooling(output1, anno1, K, N) #1 * d * P
+        filtered_out_2, expand_labels_2 = utils.stocastic_pooling(output2, anno2, K, N) #1 * d * Q
 
         P = filtered_out_1.size(2)
         Q = filtered_out_2.size(2)
@@ -241,7 +241,7 @@ class Siamese(nn.Module):
         #about 84% time spend on calc instance number
         if N is None:
             N = torch.max(anno1).long()  # the instance number
-        filtered_out_1, i_1, j_1, expand_label = utils.stocastic_pooling(output1, anno1, K, N) # 1 * d * P
+        filtered_out_1, expand_label = utils.stocastic_pooling(output1, anno1, K, N) # 1 * d * P
         P = filtered_out_1.size(2)
 
         filtered_out_1 = filtered_out_1.squeeze(dim=0) #d * K

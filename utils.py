@@ -31,10 +31,7 @@ def stocastic_pooling(out, anno, K, N):
     expand_labels = torch.cat(expand_labels, dim=0)
     rand_i = choosed_ij[:, 1]
     rand_j = choosed_ij[:, 2]
-
-    # rand_i = torch.randint(0, d, (K, )).long()
-    # rand_j = torch.randint(0, h, (K, )).long()
-    return out[:, :, rand_i, rand_j], rand_i, rand_j, expand_labels
+    return out[:, :, rand_i, rand_j], expand_labels
 
 def save_to_checkpoint(model, iter, debug=False):
     prefix = 'DEBUG-' if debug else ''
