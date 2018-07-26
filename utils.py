@@ -10,7 +10,7 @@ NAME = 'regular'
 # K, subsumple K pixels from each instance.
 # N, instance number
 # return:
-#      batch_size * channel_size * choosed_pixel_numbers, choosed_pixel_numbers * (N+1)
+#      batch_size * channel_size(d) * choosed_pixel_numbers, choosed_pixel_numbers * (N+1)
 def stocastic_pooling(out, anno, K, N):
     assert(out.size(0) == 1) #only support batch size = 1
     d, h, w = out.size(1), out.size(2), out.size(3)
