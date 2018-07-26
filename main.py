@@ -7,7 +7,7 @@ import utils
 import os
 
 DEBUG = True
-gpu = 1
+gpu = 0
 # gpu = 1 if DEBUG else 2
 lr = 2.5e-4
 momentum = 0.9
@@ -54,5 +54,6 @@ for ix, ((img1, anno1), (img2, anno2), (video,)) in enumerate(trainloader):
 
     if (DEBUG and ix % 50 == 0) or ix % 500 == 0 or (ix < 500 and ix % 100 == 0):
         model.eval()
-        print('inference start')
+        print('inference started.')
         utils.inference(model, K, ix, DEBUG)
+        print('inference finished.')
