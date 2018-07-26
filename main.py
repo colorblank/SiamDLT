@@ -20,6 +20,7 @@ ckpt_iter = 2000
 ckpt_file = None #train from deeplab pretrained model, pretrained/deeplab.pth, download it from https://drive.google.com/uc?id=1Vi9mFuXk03GBbSV_3smjFA8S5-t3xj1h&export=download
 # ckpt_file = 'PATH TO YOUR CHECKPOINT FILE'
 
+utils.prepare()
 print('running on gpu {}'.format(gpu))
 print('debug {}, lr_factor {}, lr_update_iter {}'.format(DEBUG, lr_factor, lr_update_iter))
 
