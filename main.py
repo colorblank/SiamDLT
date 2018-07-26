@@ -8,7 +8,6 @@ import os
 
 DEBUG = False
 gpu = 0
-# gpu = 1 if DEBUG else 2
 lr = 2.5e-4
 momentum = 0.9
 weight_decay = 5e-4
@@ -18,7 +17,8 @@ lr_factor = 0.2
 lr_update_iter = 20000
 ckpt_iter = 2000
 
-ckpt_file = None
+ckpt_file = None #train from deeplab pretrained model, pretrained/deeplab.pth, download it from https://drive.google.com/uc?id=1Vi9mFuXk03GBbSV_3smjFA8S5-t3xj1h&export=download
+# ckpt_file = 'PATH TO YOUR CHECKPOINT FILE'
 
 print('running on gpu {}'.format(gpu))
 print('debug {}, lr_factor {}, lr_update_iter {}'.format(DEBUG, lr_factor, lr_update_iter))

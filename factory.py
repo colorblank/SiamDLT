@@ -1,7 +1,6 @@
 import torch
 import deeplab_resnet
 
-
 def make_siamese_model(resume=None):
     deeplab_pretrained = 'pretrained/deeplab.pth' if resume is None else None
     deeplab = deeplab_resnet.make_deeplab_model(deeplab_pretrained)
