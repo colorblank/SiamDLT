@@ -29,8 +29,8 @@ def stocastic_pooling(out, anno, K, N):
         choosed_ij.append(label_index_list[torch.randint(0, len(label_index_list), (K, )).long()])
     choosed_ij = torch.cat(choosed_ij, dim=0)
     expand_labels = torch.cat(expand_labels, dim=0)
-    rand_i = choosed_ij[:, 0]
-    rand_j = choosed_ij[:, 1]
+    rand_i = choosed_ij[:, 1]
+    rand_j = choosed_ij[:, 2]
 
     # rand_i = torch.randint(0, d, (K, )).long()
     # rand_j = torch.randint(0, h, (K, )).long()
