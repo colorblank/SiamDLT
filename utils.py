@@ -33,6 +33,17 @@ def stocastic_pooling(out, anno, K, N):
     expand_labels = torch.cat(expand_labels, dim=0)
     return out[:, :, choosed_ij[:, 1], choosed_ij[:, 2]], expand_labels
 
+def prepare():
+    #create folders.. checkpoint && result
+    try:
+        os.mkdir('result')
+    except:
+        pass
+    try:
+        os.mkdir('checkpoint')
+    except:
+        pass
+
 def save_to_checkpoint(model, iter, debug=False):
     prefix = 'DEBUG-' if debug else ''
     name = '{}ckpt-iter-{:06}-{}.pth'.format(prefix, iter, NAME)
@@ -143,7 +154,6 @@ video_max_label_map = {
 'varanus-cage':1,
 'walking':2
 }
-
 
 def get_max_label(video):
     try:
