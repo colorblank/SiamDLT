@@ -216,12 +216,6 @@ class Siamese(nn.Module):
         P = filtered_out_1.size(2)
         Q = filtered_out_2.size(2)
 
-
-        label1 = anno1[:, i_1, j_1]
-        label2 = anno2[:, i_2, j_2]
-
-        # print('label size', label1.size(), label2.size(), 'expect 1 * {}, 1 * {}'.format(P, Q))
-
         similarity = []
         gt = torch.zeros((batch_size, 1, P, Q)).to('cuda')
         for b in range(batch_size):
@@ -250,9 +244,6 @@ class Siamese(nn.Module):
         filtered_out_1, i_1, j_1, expand_label = utils.stocastic_pooling(output1, anno1, K, N) # 1 * d * P
         P = filtered_out_1.size(2)
 
-        #pretend finished.
-        output1 = output1.squeeze(dim=0) #d * h * w
-        anno1 = anno1.squeeze(dim=0)
         filtered_out_1 = filtered_out_1.squeeze(dim=0) #d * K
 
         d, h, w = output2.size()
