@@ -219,44 +219,39 @@ class Siamese(nn.Module):
         for b in range(batch_size):
             similarity.append((filtered_out_1.transpose(1, 2)[b, :, :] @ filtered_out_2[b, :, :]).unsqueeze(0))
             gt[b, 0] = expand_labels_1 @ expand_labels_2.transpose(0, 1)
-
-        # print('process by batch finished', flush=True)
         similarity = torch.cat(similarity, dim=0).unsqueeze(dim=1)
-
-        # print('similarity size', similarity.size(), 'expect 1 * 1 * {} * {}'.format(P, Q))
         similarity = self.bn_adjust(similarity)
-
         similarity = self.sigmoid(similarity)
 
         return self.criterion(similarity, gt)
 
     #only inference single (not batch) frames
+    #annotation size h * w
+    #input size d * h * w
     def inference_single(self, input1, anno1, input2, K = 100, N = None):
+        assert len(anno1.size()) == 2
+        assert (len(input1.size()) == len(input2.size())) and (len(input1.size()) == 3)
         anno1 = self.mp(anno1.unsqueeze(dim=0))
         #about 14% time spend on forward
-        output1 = self.forward(input1.unsqueeze(dim=0)) #
+        output1 = self.forward(input1.unsqueeze(dim=0)) # 1 * d * h * w
         output2 = self.forward(input2.unsqueeze(dim=0)).squeeze(dim=0) # d * h * w
         #about 84% time spend on calc instance number
         if N is None:
             N = torch.max(anno1).long()  # the instance number
-        filtered_out_1, expand_label = utils.stocastic_pooling(output1, anno1, K, N) # 1 * d * P
-        P = filtered_out_1.size(2)
 
-        filtered_out_1 = filtered_out_1.squeeze(dim=0) #d * K
+        filtered_out_1, expand_label = utils.stocastic_pooling(output1, anno1, K, N) # 1 * d * P , P * (N+1)
+        filtered_out_1 = filtered_out_1.squeeze(dim=0) #d * P
+        P = filtered_out_1.size(1)
 
         d, h, w = output2.size()
-        similarity = filtered_out_1.transpose(0, 1) @ output2.view(d, -1) # P * hw
+        similarity = filtered_out_1.transpose(0, 1) @ output2.view(d, -1) # P * d  @ d * hw => P * hw
         similarity = similarity.view(1, 1, P, -1)
         similarity = self.bn_adjust(similarity).squeeze() # P * hw
         similarity = self.sigmoid(similarity)
         similarity = similarity.view(P, h*w)
 
-        # print('similarity size', similarity.size(), 'expect {} * {}'.format(K , h * w))
-        # print('expand label size', expand_label.size(), 'expect {} * {}'.format(N+1, K))
         similarity_by_label = expand_label.transpose(0,1) @ similarity # (N + 1) * (h * w)
-        # print('similarity by label size' , similarity_by_label.size(), 'expect {} * {}'.format(N+1, h * w))
         pred_label = torch.argmax(similarity_by_label, dim=0).view(h, w)
-
         return pred_label
 
 def make_deeplab_model(pretrained_path):
