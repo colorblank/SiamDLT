@@ -11,13 +11,14 @@ DAVIS_PATH = '/home/cly/datacenter/DAVIS'
 IMG_MEAN = np.array((104.00698793,116.66876762,122.67891434), dtype=np.float32)
 
 class DAVIS2017(torch.utils.data.Dataset):
-    def __init__(self):
+    def __init__(self, debug=False):
         #get video list
         self.videos = []
         with open(os.path.join(DAVIS_PATH, 'ImageSets', '2017', 'train.txt'), 'r') as file:
             lines = csv.reader(file)
             for line in lines:
                 self.videos.append(line[0])
+        self.debug = debug
 
         np.random.seed(1337)
 
@@ -34,8 +35,9 @@ class DAVIS2017(torch.utils.data.Dataset):
         num_frames = len(os.listdir(os.path.join(DAVIS_PATH, 'JPEGImages', '480p', random_video)))
 
         #debug: only training boat
-        # random_video = 'boat'
-        # num_frames = 75
+        if self.debug:
+            random_video = 'boat'
+            num_frames = 75
 
         i = np.random.randint(0, num_frames)
         j = np.random.randint(0, num_frames)
