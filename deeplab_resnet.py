@@ -239,13 +239,14 @@ class Siamese(nn.Module):
         return self.criterion(similarity, gt)
 
     #only inference single (not batch) frames
-    def inference_single(self, input1, anno1, input2, K = 100):
+    def inference_single(self, input1, anno1, input2, K = 100, N = None):
         anno1 = self.mp(anno1.unsqueeze(dim=0))
         #about 14% time spend on forward
         output1 = self.forward(input1.unsqueeze(dim=0)) #
         output2 = self.forward(input2.unsqueeze(dim=0)).squeeze(dim=0) # d * h * w
-        #about 84% time spend on calc class number, which is not required in our system..
-        N = torch.max(anno1).long()  # the class number
+        #about 84% time spend on calc instance number
+        if N is None:
+            N = torch.max(anno1).long()  # the instance number
         filtered_out_1, i_1, j_1, expand_label = utils.stocastic_pooling(output1, anno1, K, N) # 1 * d * P
         P = filtered_out_1.size(2)
 
