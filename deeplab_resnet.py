@@ -1,23 +1,12 @@
 import torch.nn as nn
-import math
-import torch.utils.model_zoo as model_zoo
 import torch
-import numpy as np
 affine_par = True
 import utils
 import itertools
 import performance
 
-import time
-
 logger = performance.Logger()
 
-def outS(i):
-    i = int(i)
-    i = (i+1)//2
-    i = int(np.ceil((i+1)/2.0))
-    i = (i+1)//2
-    return i
 def conv3x3(in_planes, out_planes, stride=1):
     "3x3 convolution with padding"
     return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
@@ -185,33 +174,6 @@ class ResNet(nn.Module):
 
         return x
 
-class MS_Deeplab(nn.Module):
-    def __init__(self,block,NoLabels):
-        super(MS_Deeplab,self).__init__()
-        self.Scale = ResNet(block,[3, 4, 23, 3],NoLabels)   #changed to fix #4 
-
-    def forward(self,x):
-        input_size_r, input_size_c = x.size()[2], x.size()[3]
-        self.interp1 = nn.UpsamplingBilinear2d(size = (  int(input_size_r*0.75)+1,  int(input_size_c*0.75)+1  ))
-        self.interp2 = nn.UpsamplingBilinear2d(size = (  int(input_size_r*0.5)+1,   int(input_size_c*0.5)+1   ))
-        self.interp3 = nn.UpsamplingBilinear2d(size = (  outS(input_size_r),   outS(input_size_c)   ))
-        out = []
-        x2 = self.interp1(x)
-        x3 = self.interp2(x)
-        out.append(self.Scale(x))        # for original scale
-        out.append(self.interp3(self.Scale(x2)))        # for 0.75x scale
-        out.append(self.Scale(x3))        # for 0.5x scale
-
-        for each in out:
-            print('output size~~~: ', each.size())
-
-
-        x2Out_interp = out[1]
-        x3Out_interp = self.interp3(out[2])
-        temp1 = torch.max(out[0],x2Out_interp)
-        out.append(torch.max(temp1,x3Out_interp))
-        return out
-
 class Deeplab(nn.Module):
     def __init__(self, block, num_labels):
         super(Deeplab, self).__init__()
@@ -299,7 +261,6 @@ class Siamese(nn.Module):
         similarity = self.sigmoid(similarity)
         similarity = similarity.view(P, h*w)
 
-
         # print('similarity size', similarity.size(), 'expect {} * {}'.format(K , h * w))
         # print('expand label size', expand_label.size(), 'expect {} * {}'.format(N+1, K))
         similarity_by_label = expand_label.transpose(0,1) @ similarity # (N + 1) * (h * w)
@@ -307,10 +268,6 @@ class Siamese(nn.Module):
         pred_label = torch.argmax(similarity_by_label, dim=0).view(h, w)
 
         return pred_label
-
-def Res_Deeplab(NoLabels=21):
-    model = MS_Deeplab(Bottleneck,NoLabels)
-    return model
 
 def make_deeplab_model(pretrained_path):
     model = Deeplab(Bottleneck, 21)
@@ -323,7 +280,6 @@ def make_deeplab_model(pretrained_path):
 def make_siamese_model():
     deeplab = make_deeplab_model('pretrained/deeplab.pth')
     model = Siamese(deeplab)
-    # print(sum(p.numel() for p in model.parameters() if p.requires_grad))
     return model
 
 
