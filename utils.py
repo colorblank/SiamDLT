@@ -8,18 +8,18 @@ import matplotlib.pyplot as plt
 
 IMG_MEAN = np.array((104.00698793,116.66876762,122.67891434), dtype=np.float32)
 
-NAME = 'test_1xlr'
+NAME = 'regular'
 # N, class number
 def stocastic_pooling(out, anno, K, N):
-    d, h, w = out.size()[1], out.size()[2], out.size()[3]
+    assert(out.size(0) == 1) #only support batch size = 1
+    d, h, w = out.size(1), out.size(2), out.size(3)
     #out (batch_size * d * h * w)
-    # print('d h w', d, h, w)
     #0~N, every class (anno == label) , random choose K pixels
 
     choosed_ij = []
     expand_labels = []
     for label in range(N+1):
-        label_index_list = torch.nonzero(anno == label)
+        label_index_list = torch.nonzero(anno == label) # for example, size 6761 * 3
         if len(label_index_list) == 0:
             continue
         label_i_expend = torch.zeros((K, N+1)).to('cuda')
@@ -34,10 +34,6 @@ def stocastic_pooling(out, anno, K, N):
 
     # rand_i = torch.randint(0, d, (K, )).long()
     # rand_j = torch.randint(0, h, (K, )).long()
-
-    # print(rand_i)
-    # print(rand_j)
-    # print('size', out[:, :, rand_i, rand_j].size())
     return out[:, :, rand_i, rand_j], rand_i, rand_j, expand_labels
 
 def save_to_checkpoint(model, iter, debug=False):
