@@ -56,4 +56,14 @@ The implementation of deeplab is heavily borrowed from [pytorch-deeplab-resnet](
 
 * [Similarity Learning for Dense Label Transfer](https://davischallenge.org/challenge2018/papers/DAVIS-Interactive-Challenge-2nd-Team.pdf)
 
-  
+### Citing
+
+If you find this code useful, please cite:
+```
+@article{DAVIS2018-Interactive-2nd,
+          author = {M. Najafi, V. Kulharia, T. Ajanthan, P. H. S. Torr},
+          title = {Similarity Learning for Dense Label Transfer},
+          journal = {The 2018 DAVIS Challenge on Video Object Segmentation - CVPR Workshops},
+          year = {2018}
+        }
+```
